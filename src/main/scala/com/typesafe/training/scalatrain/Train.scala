@@ -10,9 +10,12 @@ case class Train(info: TrainInfo, schedule: Seq[(Time, Station)]) {
   require(schedule.size >= 2, "schedule must contain at least two elements")
   // TODO Verify that `schedule` is strictly increasing in time
 
-  val stations: Seq[Station] =
-    // Could also be expressed in short notation: schedule map (_._2)
-    schedule map (trainAndStation => trainAndStation._2)
+  val stations: Seq[Station] = schedule.map(_._2)
+
+  val backToBackStations: Seq[(Station, Station)] = stations zip stations.tail
+
+  val departureTimes: Map[Station, Time] = schedule.map(_.swap)(collection.breakOut)
+
 }
 
 object TrainInfo {
@@ -29,4 +32,8 @@ sealed abstract class TrainInfo {
   def number: Int
 }
 
-case class Station(name: String)
+case class Station(name: String) extends AnyVal
+
+object Station {
+  implicit def stringToStation(name: String) = Station(name)
+}

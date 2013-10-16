@@ -15,6 +15,10 @@ class TrainSpec extends WordSpec with Matchers {
       evaluating(Train(TrainInfo.InterCityExpress(724), Vector())) should produce[IAE]
       evaluating(Train(TrainInfo.InterCityExpress(724), Vector(ice724MunichTime -> munich))) should produce[IAE]
     }
+
+    "initialize correctly departureTimes" in {
+      ice726.departureTimes shouldBe ice726.schedule.map(_.swap).toMap
+    }
   }
 
   "stations" should {
@@ -22,4 +26,5 @@ class TrainSpec extends WordSpec with Matchers {
       ice724.stations shouldEqual Vector(munich, nuremberg, frankfurt, cologne)
     }
   }
+
 }

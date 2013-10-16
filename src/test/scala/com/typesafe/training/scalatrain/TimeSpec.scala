@@ -70,4 +70,15 @@ class TimeSpec extends WordSpec with Matchers {
       Time() >= Time(1) shouldBe false
     }
   }
+
+  "Calling Time.isIncreasing" should {
+    "return false" in {
+      //      Time.isIncreasing(Vector(Time(18, 0), Time(5, 0))) shouldBe (false)
+    }
+
+    "return true" in {
+      //      Time.isIncreasing(Vector(Time(5, 0), Time(18, 0))) shouldBe (true)
+    }
+  }
+
 }

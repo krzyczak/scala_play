@@ -6,6 +6,7 @@ package com.typesafe.training.scalatrain
 
 import scala.util.control.Exception
 import scala.util.parsing.json.{ JSONObject => JsonObject }
+import scala.annotation.tailrec
 
 object Time {
 
@@ -19,6 +20,25 @@ object Time {
       minutesAny <- json.obj get "minutes"
       minutes <- Exception.allCatch opt minutesAny.toString.toInt
     } yield Time(hours, minutes)
+
+  //  @tailrec def isIncreasing(as: Seq[Time]): Boolean = as match {
+  //    case t1 +: t2 +: _ => (t1 < t2) && isIncreasing(_)
+  //    case _ => true
+  //  }
+
+  def isIncreasingSliding(as: Seq[Time]): Boolean =
+    as.sliding(2).forall({
+      case (first: Time) +: (sec: Time) +: _ => first < sec
+      case _                                 => true
+    })
+
+  implicit def stringToTime(t: String) = {
+    val timePattern = """(\d{1,2}):(\d{1,2})""".r
+    t match {
+      case timePattern(hours, minutes) => Time(hours.toInt, minutes.toInt)
+      case _                           => throw new Exception(s"Invalid time format: $t")
+    }
+  }
 }
 
 case class Time(hours: Int = 0, minutes: Int = 0) extends Ordered[Time] {

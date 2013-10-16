@@ -28,4 +28,45 @@ class JourneyPlanner(trains: Set[Train]) {
         case _                        => false
       }
     )
+
+  val hops: Map[Station, Set[Hop]] = {
+    val allHops = for {
+      t <- trains
+      (from, to) <- t.backToBackStations
+    } yield {
+      Hop(from, to, t)
+    }
+    allHops.groupBy(_.from)
+  }
+
+  // TODO implement this using streams
+  def connections(from: Station, to: Station, departureTime: Time): Set[Seq[Hop]] = {
+    require(from != to)
+
+    def trConnections(soFar: Vector[Hop]): Set[Seq[Hop]] = {
+      val last = soFar.last
+      if (last.to == to) {
+        Set(soFar)
+      } else {
+        val visited = soFar.head.from +: soFar.map(_.to)
+        val allHops = hops.getOrElse(last.to, Set())
+        val possibleHops = allHops filter {
+          hop =>
+            hop.departureTime <= last.arrivalTime && !visited.contains(hop.to)
+        }
+        possibleHops flatMap {
+          hop => trConnections(soFar :+ hop)
+        }
+      }
+    }
+
+    val allHops = hops.getOrElse(from, Set())
+    val possibleHops = allHops filter {
+      _.departureTime >= departureTime
+    }
+
+    possibleHops flatMap {
+      hop => trConnections(Vector(hop))
+    }
+  }
 }

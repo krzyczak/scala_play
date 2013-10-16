@@ -16,10 +16,34 @@ class JourneyPlannerSpec extends WordSpec with Matchers {
     }
   }
 
+  "hops" should {
+    "be initialized correctly" in {
+      //      planner.hops shouldBe ()
+    }
+  }
+
+  //  "Calling connections" should {
+  //    "return empty connections" in {
+  //      planner.connections(munich, cologne, Time(8, 50)) shouldBe (Set())
+  //    }
+  //
+  //    "return the correct connections" in {
+  //      planner.connections(munich, nuremberg, Time(8, 45)) shouldBe (Set())
+  //    }
+  //  }
+
   "Calling trainsAt" should {
     "return the correct trains" in {
       planner.trainsAt(munich) shouldEqual Set(ice724, ice726)
       planner.trainsAt(cologne) shouldEqual Set(ice724)
+    }
+  }
+
+  "Calling trainsAt on String" should {
+    "use implicit conversion" in {
+      planner trainsAt "Munich" shouldEqual Set(ice724, ice726)
+
+      Time.fromMinutes(("11:00": Time) minus "01:00") shouldEqual Time(10, 0)
     }
   }
 
